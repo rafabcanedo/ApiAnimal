@@ -30,4 +30,9 @@ public class AnimalService {
 
         return repository.save(animal);
     }
+
+    //public Animal findAll()
+    public Animal deleteAnimal(final Integer id ) {
+        return repository.findById(id).orElse(null);
+    }
 }

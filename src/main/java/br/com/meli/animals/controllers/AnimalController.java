@@ -34,4 +34,10 @@ public class AnimalController {
         return ResponseEntity.ok(createdAnimal);
     }
 
+    @DeleteMapping(value = "/animals/{id}")
+    public ResponseEntity<Integer> deleteAnimal(Integer id) {
+
+        return ResponseEntity.ok(id);
+    }
+
 }
