@@ -34,10 +34,26 @@ public class AnimalController {
         return ResponseEntity.ok(createdAnimal);
     }
 
-    @DeleteMapping(value = "/animals/{id}")
-    public ResponseEntity<Integer> deleteAnimal(Integer id) {
+    @PutMapping(value = "/animals/{id}")
+    public ResponseEntity<Animal> update(@PathVariable Integer id, @RequestBody Animal animal) {
+        Animal editedAnimal = service.update(
+                animal.getName(), animal.getAge(), animal.getColor(), id
+        );
 
-        return ResponseEntity.ok(id);
+        return ResponseEntity.ok(editedAnimal);
+        //System.out.println("Animal has been deleted.");
+    }
+
+    @DeleteMapping(value = "/animals/{id}")
+    public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id) {
+
+        service.deleteAnimal(id);
+
+        return ResponseEntity.noContent().build();
     }
 
 }
+
+// Delete
+// FindById
+// FindAll

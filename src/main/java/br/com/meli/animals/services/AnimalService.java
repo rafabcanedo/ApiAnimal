@@ -5,6 +5,8 @@ import br.com.meli.animals.repositories.AnimalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AnimalService {
@@ -12,18 +14,9 @@ public class AnimalService {
     // Connect db => Animal repository
     private final AnimalRepository repository;
 
-    // Constructor (1 of 2 suggestion)
-    // Pq usar essa maneira?
-    /*AnimalService(AnimalRepository animalRepository) {
-        this.repository = animalRepository;
-    }*/
-
-    // Final => for not alter dates during the execution ??
     public Animal create(final String name, final Integer age, final String color) {
         Animal animal = new Animal();
 
-        // Getters and Satters
-        // Getters ???
         animal.setName(name);
         animal.setAge(age);
         animal.setColor(color);
@@ -31,8 +24,23 @@ public class AnimalService {
         return repository.save(animal);
     }
 
-    //public Animal findAll()
-    public Animal deleteAnimal(final Integer id ) {
-        return repository.findById(id).orElse(null);
+    public Animal update(final String name, final Integer age, final String color, final Integer id) {
+
+        Optional<Animal> animal = repository.findById(id);
+
+        if(animal.isPresent()) {
+            animal.get().setName(name);
+            animal.get().setAge(age);
+            animal.get().setColor(color);
+
+            return repository.save(animal.get());
+        }
+
+        return null;
     }
+
+    //public Animal findAll()
+        public void deleteAnimal(Integer id) {
+            repository.deleteById(id);
+        }
 }
