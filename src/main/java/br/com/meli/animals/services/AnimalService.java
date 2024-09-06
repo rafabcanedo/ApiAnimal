@@ -5,6 +5,7 @@ import br.com.meli.animals.repositories.AnimalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -39,8 +40,22 @@ public class AnimalService {
         return null;
     }
 
-    //public Animal findAll()
-        public void deleteAnimal(Integer id) {
-            repository.deleteById(id);
+
+    public void deleteAnimal(Integer id) {
+        repository.deleteById(id);
+    }
+
+    public Animal findById(Integer id) {
+        Optional<Animal> animal = repository.findById(id);
+
+        if(animal.isPresent()) {
+            return animal.get();
         }
+
+        return null;
+    }
+
+    public List<Animal> findAll() {
+        return repository.findAll();
+    }
 }

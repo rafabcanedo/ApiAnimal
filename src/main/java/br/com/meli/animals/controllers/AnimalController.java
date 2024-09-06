@@ -19,7 +19,7 @@ public class AnimalController {
 
     @RequestMapping(value = "/animals")
     public ResponseEntity getAllAnimals() {
-
+        
         var allAnimals = animalRepository.findAll();
 
         return ResponseEntity.ok(allAnimals);
@@ -41,19 +41,22 @@ public class AnimalController {
         );
 
         return ResponseEntity.ok(editedAnimal);
-        //System.out.println("Animal has been deleted.");
     }
 
     @DeleteMapping(value = "/animals/{id}")
-    public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id) {
+    public ResponseEntity<String> delete(@PathVariable(value = "id") Integer id) {
 
         service.deleteAnimal(id);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Animal has been deleted.");
+    }
+
+    @GetMapping(value = "/animals/{id}")
+    public ResponseEntity<Animal> findById(@PathVariable(value = "id") Integer id) {
+
+        Animal animal = service.findById(id);
+
+        return ResponseEntity.ok(animal);
     }
 
 }
-
-// Delete
-// FindById
-// FindAll
