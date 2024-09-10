@@ -25,7 +25,7 @@ public class AnimalController {
         return ResponseEntity.ok(allAnimals);
     }
 
-    @PostMapping(value = "/animals/create")
+    @PostMapping(value = "/animals")
     public ResponseEntity<Animal> create(@RequestBody Animal animal) {
         Animal createdAnimal = service.create(
                 animal.getName(), animal.getAge(), animal.getColor()

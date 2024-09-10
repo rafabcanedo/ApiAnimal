@@ -23,7 +23,7 @@ public class HabitatController {
         return ResponseEntity.ok(allHabitats);
     }
 
-    @PostMapping(value = "/habitats/create")
+    @PostMapping(value = "/habitats")
     public ResponseEntity<Habitat> create(@RequestBody Habitat habitat) {
 
         Habitat createdHabitat = service.create(
