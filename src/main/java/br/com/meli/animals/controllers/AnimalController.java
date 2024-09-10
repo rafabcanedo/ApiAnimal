@@ -44,11 +44,11 @@ public class AnimalController {
     }
 
     @DeleteMapping(value = "/animals/{id}")
-    public ResponseEntity<String> delete(@PathVariable(value = "id") Integer id) {
+    public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id) {
 
         service.deleteAnimal(id);
 
-        return ResponseEntity.ok("Animal has been deleted.");
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "/animals/{id}")

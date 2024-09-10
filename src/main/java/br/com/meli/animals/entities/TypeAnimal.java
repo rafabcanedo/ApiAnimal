@@ -15,33 +15,6 @@ public class TypeAnimal {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Column(name= "CARNIVORO")
-    private String carnivoro;
-
-    @Column(name= "HERBIVORO")
-    private String herbivoro;
-
-    @Column(name= "ONIVORO")
-    private String onivoro;
-
-    @Column(name= "TERRESTRE")
-    private String terrestre;
-
-    @Column(name= "AQUATICO")
-    private String aquatico;
-
-    @Column(name= "AEREO")
-    private String aereo;
-
-    @Column(name= "MAMIFERO")
-    private String mamifero;
-
-    @Column(name= "ANFIBIO")
-    private String anfibio;
-
-    @Column(name= "REPTIL")
-    private String reptil;
-
-    @Column(name= "AVE")
-    private String ave;
+    @Column(name= "TYPE_ANIMAL_NAME")
+    private String name;
 }

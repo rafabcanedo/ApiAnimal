@@ -15,18 +15,6 @@ public class Habitat {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Column(name= "PANTANAL")
-    private String pantanal;
-
-    @Column(name= "DESERTO")
-    private String deserto;
-
-    @Column(name= "ANTARTIDA")
-    private String antartida;
-
-    @Column(name= "SAVANA")
-    private String savana;
-
-    @Column(name= "TROPICAL")
-    private String tropical;
+    @Column(name= "HABITAT_NAME")
+    private String name;
 }
