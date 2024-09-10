@@ -24,4 +24,12 @@ public class Animal {
 
     @Column(name = "COLOR")
     private String color;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "type_id")
+    private TypeAnimal typeAnimal;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "habitat_id")
+    private Habitat habitatAnimal;
 }

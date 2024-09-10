@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity(name = "HABITAT")
 @Getter
 @Setter
@@ -17,4 +19,7 @@ public class Habitat {
 
     @Column(name= "HABITAT_NAME")
     private String name;
+
+    //@OneToMany(mappedBy = "habitat", fetch = FetchType.EAGER)
+    //private List<Animal> animalsHabitat;
 }
