@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity(name = "TYPE_ANIMAL")
 @Getter
 @Setter
@@ -17,4 +19,7 @@ public class TypeAnimal {
 
     @Column(name= "TYPE_ANIMAL_NAME")
     private String name;
+
+    @OneToMany(mappedBy = "typeAnimal", cascade = CascadeType.ALL)
+    private List<Animal> animals;
 }

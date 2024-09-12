@@ -13,7 +13,7 @@ import lombok.Setter;
 public class Animal {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO )
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     @Column(name = "NAME")
@@ -25,11 +25,14 @@ public class Animal {
     @Column(name = "COLOR")
     private String color;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "type_id")
-    private TypeAnimal typeAnimal;
+    @Column(name = "type_animal_id")
+    private String typeAnimalId;
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "type_animal_id")
+    private TypeAnimal typeAnimal;
+
+    /*@ManyToOne(mappedBy = "habitat", cascade = CascadeType.ALL)
     @JoinColumn(name = "habitat_id")
-    private Habitat habitatAnimal;
+    private Habitat habitatAnimal;*/
 }
