@@ -4,29 +4,29 @@ import br.com.meli.animals.entities.TypeAnimal;
 import br.com.meli.animals.repositories.TypeAnimalRepository;
 import br.com.meli.animals.services.TypeAnimalService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
+// @RequiredArgsConstructor
 public class TypeAnimalController {
 
     private final TypeAnimalService service;
-    private final TypeAnimalRepository repository;
+    //private final TypeAnimalRepository repository;
 
-    @RequestMapping(value = "/typeanimals")
+    public TypeAnimalController(TypeAnimalService typeAnimalService) {
+        this.service = typeAnimalService;
+    }
+
+    /*@RequestMapping(value = "/typeanimals")
     public ResponseEntity getAllTypeAnimals() {
 
         var allTypeAnimals = repository.findAll();
 
         return ResponseEntity.ok(allTypeAnimals);
-    }
+    }*/
 
     @PostMapping(value = "/typeanimals")
     public ResponseEntity<TypeAnimal> create(@RequestBody TypeAnimal typeAnimal) {
@@ -35,16 +35,6 @@ public class TypeAnimalController {
         );
 
         return ResponseEntity.ok(createdTypeAnimal);
-    }
-
-    @PutMapping(value = "/typeanimals/{id}")
-    public ResponseEntity<TypeAnimal> update(@PathVariable Integer id, @RequestBody TypeAnimal typeAnimal) {
-
-        TypeAnimal editedTypeAnimal = service.update(
-                typeAnimal.getName(), id
-        );
-
-        return ResponseEntity.ok(editedTypeAnimal);
     }
 
     @DeleteMapping(value = "/typeanimals/{id}")

@@ -1,6 +1,5 @@
 package br.com.meli.animals.controllers;
 
-import br.com.meli.animals.entities.Animal;
 import br.com.meli.animals.entities.Habitat;
 import br.com.meli.animals.repositories.HabitatRepository;
 import br.com.meli.animals.services.HabitatService;
@@ -8,19 +7,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class HabitatController {
 
     private final HabitatService service;
-    private final HabitatRepository habitatRepository;
+    //private final HabitatRepository habitatRepository;
 
-    @RequestMapping(value = "/habitats")
-    public ResponseEntity getAllHabitats() {
-
-        var allHabitats = habitatRepository.findAll();
-
-        return ResponseEntity.ok(allHabitats);
+    public HabitatController(HabitatService service) {
+        this.service = service;
     }
 
     @PostMapping(value = "/habitats")
@@ -33,28 +30,19 @@ public class HabitatController {
         return ResponseEntity.ok(createdHabitat);
     }
 
-    @PutMapping(value = "/habitats/{id}")
-    public ResponseEntity<Habitat> update(@PathVariable Integer id, @RequestBody Habitat habitat) {
-        Habitat editedHabitat = service.update(
-                habitat.getName(), id
-        );
-
-        return ResponseEntity.ok(editedHabitat);
-    }
-
     @DeleteMapping(value = "/habitats/{id}")
-    public ResponseEntity<String> delete(@PathVariable(value = "id") Integer id) {
+    public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id) {
 
         service.deleteHabitat(id);
 
-        return ResponseEntity.ok("Animal has been deleted.");
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "/habitats/{id}")
-    public ResponseEntity<Habitat> findById(@PathVariable(value = "id") Integer id) {
+    public ResponseEntity<Habitat> findgetHabitatById(@PathVariable Integer id) {
 
-        Habitat habitat = service.findById(id);
+       Optional<Habitat> findHabitat = service.findByHabitatId(id);
 
-        return ResponseEntity.ok(habitat);
+        return findHabitat.map(habitat -> ResponseEntity.status(200).body(habitat)).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

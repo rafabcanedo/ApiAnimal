@@ -1,7 +1,11 @@
 package br.com.meli.animals.services;
 
 import br.com.meli.animals.entities.Animal;
+import br.com.meli.animals.entities.Habitat;
+import br.com.meli.animals.entities.TypeAnimal;
 import br.com.meli.animals.repositories.AnimalRepository;
+import br.com.meli.animals.repositories.HabitatRepository;
+import br.com.meli.animals.repositories.TypeAnimalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +19,8 @@ public class AnimalService {
 
     // Connect db => Animal repository
     private final AnimalRepository repository;
+    private final HabitatRepository habitatRepository;
+    private final TypeAnimalRepository tipoAnimalRepository;
 
     public Animal create(final String name, final Integer age, final String color) {
         Animal animal = new Animal();
@@ -22,6 +28,21 @@ public class AnimalService {
         animal.setName(name);
         animal.setAge(age);
         animal.setColor(color);
+
+        return repository.save(animal);
+    }
+
+    public Animal create(final String name, final int age, final String color, final TypeAnimal typeAnimal, final Habitat habitat){
+        Animal animal = new Animal();
+        Optional<Habitat> findHabitat = habitatRepository.findById(habitat.getId());
+        Optional<TypeAnimal> findType = tipoAnimalRepository.findById(typeAnimal.getId());
+
+        animal.setName(name);
+        animal.setAge(age);
+        animal.setColor(color);
+
+        findHabitat.ifPresent(animal::setHabitatAnimal);
+        findType.ifPresent(animal::setTypeAnimal);
 
         return repository.save(animal);
     }
@@ -54,5 +75,10 @@ public class AnimalService {
         }
 
         return null;
+    }
+
+    public Habitat getHabitatByAnimalId(Integer id) {
+        Optional<Animal> foundAnimal = repository.findById(id);
+        return foundAnimal.map(Animal::getHabitatAnimal).orElse(null);
     }
 }
