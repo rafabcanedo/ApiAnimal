@@ -2,17 +2,21 @@ package br.com.meli.animals.services;
 
 import br.com.meli.animals.entities.Animal;
 import br.com.meli.animals.entities.TypeAnimal;
+import br.com.meli.animals.repositories.AnimalRepository;
 import br.com.meli.animals.repositories.TypeAnimalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 
 @Service
 @RequiredArgsConstructor
 public class TypeAnimalService {
 
     private final TypeAnimalRepository repository;
+    private final AnimalRepository animalRepository;
 
     public TypeAnimal create(final String name) {
         TypeAnimal typeAnimal = new TypeAnimal();
@@ -36,11 +40,11 @@ public class TypeAnimalService {
     }
 
 
-    public void deleteTypeAnimal(Integer id) {
+    public void deleteTypeAnimal(final Integer id) {
         repository.deleteById(id);
     }
 
-    public TypeAnimal findById(Integer id) {
+    public TypeAnimal findById(final Integer id) {
         Optional<TypeAnimal> typeAnimal = repository.findById(id);
 
         if(typeAnimal.isPresent()) {
@@ -49,4 +53,13 @@ public class TypeAnimalService {
 
         return null;
     }
+
+    public Optional<TypeAnimal> findByTypeId(final Integer id) {
+        return repository.findById(id);
+    }
+
+    public List<TypeAnimal> findTypesByHabitatId(final Integer id) {
+        return repository.findTypesByHabitatId(id);
+    }
+
 }

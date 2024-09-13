@@ -20,6 +20,6 @@ public class Habitat {
     @Column(name= "HABITAT_NAME")
     private String name;
 
-    @OneToMany(mappedBy = "habitat", fetch = FetchType.EAGER)
-    private List<Animal> animalsHabitat;
+    @OneToMany(mappedBy = "habitatAnimal", fetch = FetchType.EAGER)
+    private List<Animal> animals;
 }

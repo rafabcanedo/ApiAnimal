@@ -2,10 +2,12 @@ package br.com.meli.animals.services;
 
 import br.com.meli.animals.entities.Animal;
 import br.com.meli.animals.entities.Habitat;
+import br.com.meli.animals.entities.TypeAnimal;
 import br.com.meli.animals.repositories.HabitatRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -48,5 +50,11 @@ public class HabitatService {
         }
 
         return null;
+    }
+
+    public Optional<Habitat> findByHabitatId(final Integer id){
+
+        return repository.findById(id);
+
     }
 }

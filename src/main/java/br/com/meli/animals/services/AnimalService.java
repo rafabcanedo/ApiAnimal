@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 
 @Service
 @RequiredArgsConstructor
@@ -41,11 +42,11 @@ public class AnimalService {
     }
 
 
-    public void deleteAnimal(Integer id) {
+    public void deleteAnimal(final Integer id) {
         repository.deleteById(id);
     }
 
-    public Animal findById(Integer id) {
+    public Animal findById(final Integer id) {
         Optional<Animal> animal = repository.findById(id);
 
         if(animal.isPresent()) {
@@ -53,9 +54,5 @@ public class AnimalService {
         }
 
         return null;
-    }
-
-    public List<Animal> findAll() {
-        return repository.findAll();
     }
 }

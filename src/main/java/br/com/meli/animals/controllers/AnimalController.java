@@ -1,10 +1,15 @@
 package br.com.meli.animals.controllers;
 
 import br.com.meli.animals.entities.Animal;
+import br.com.meli.animals.entities.TypeAnimal;
 import br.com.meli.animals.repositories.AnimalRepository;
 import br.com.meli.animals.services.AnimalService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -58,5 +63,11 @@ public class AnimalController {
 
         return ResponseEntity.ok(animal);
     }
+
+    /*@RequestMapping(value = "animals/{type_animal_id}")
+    public ResponseEntity getAllAnimalsByType() {
+        @Query(value = "SELECT type_animal_id FROM animal", nativeQuery = true)
+        List<TypeAnimal> animals;
+    }*/
 
 }

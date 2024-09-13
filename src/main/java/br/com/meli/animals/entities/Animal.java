@@ -24,15 +24,12 @@ public class Animal {
 
     @Column(name = "COLOR")
     private String color;
-
-    @Column(name = "type_animal_id")
-    private String typeAnimalId;
-
+    
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "type_animal_id")
     private TypeAnimal typeAnimal;
 
-    /*@ManyToOne(mappedBy = "habitat", cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "habitat_id")
-    private Habitat habitatAnimal;*/
+    private Habitat habitatAnimal;
 }
