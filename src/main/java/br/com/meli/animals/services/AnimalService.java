@@ -9,9 +9,7 @@ import br.com.meli.animals.repositories.TypeAnimalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
 
 @Service
 @RequiredArgsConstructor

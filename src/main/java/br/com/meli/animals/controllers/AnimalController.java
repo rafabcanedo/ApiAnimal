@@ -16,16 +16,16 @@ import java.util.Optional;
 public class AnimalController {
 
     private final AnimalService service;
-    // private final AnimalRepository animalRepository;
+    //private final AnimalRepository repository;
 
-    public AnimalController(AnimalService service, AnimalRepository animalRepository) {
+    public AnimalController(AnimalService service, AnimalRepository repository) {
         this.service = service;
     }
 
     /*@RequestMapping(value = "/animals")
     public ResponseEntity getAllAnimals() {
         
-        var allAnimals = animalRepository.findAll();
+        var allAnimals = repository.findAll();
 
         return ResponseEntity.ok(allAnimals);
     }*/
