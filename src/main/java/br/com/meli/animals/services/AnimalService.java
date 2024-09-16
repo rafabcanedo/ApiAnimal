@@ -18,9 +18,9 @@ public class AnimalService {
     // Connect db => Animal repository
     private final AnimalRepository repository;
     private final HabitatRepository habitatRepository;
-    private final TypeAnimalRepository tipoAnimalRepository;
+    private final TypeAnimalRepository typeAnimalRepository;
 
-    public Animal create(final String name, final Integer age, final String color) {
+    /*public Animal create(final String name, final Integer age, final String color) {
         Animal animal = new Animal();
 
         animal.setName(name);
@@ -28,12 +28,14 @@ public class AnimalService {
         animal.setColor(color);
 
         return repository.save(animal);
-    }
+    }*/
 
-    public Animal create(final String name, final int age, final String color, final TypeAnimal typeAnimal, final Habitat habitat){
+    // public Animal findAll() {}
+
+    public Animal create(final String name, final Integer age, final String color, final TypeAnimal typeAnimal, final Habitat habitat){
         Animal animal = new Animal();
         Optional<Habitat> findHabitat = habitatRepository.findById(habitat.getId());
-        Optional<TypeAnimal> findType = tipoAnimalRepository.findById(typeAnimal.getId());
+        Optional<TypeAnimal> findType = typeAnimalRepository.findById(typeAnimal.getId());
 
         animal.setName(name);
         animal.setAge(age);
@@ -62,17 +64,13 @@ public class AnimalService {
 
 
     public void deleteAnimal(final Integer id) {
-        repository.deleteById(id);
+        Optional<Animal> toDelete = repository.findById(id);
+        toDelete.ifPresent(repository::delete);
     }
 
-    public Animal findById(final Integer id) {
-        Optional<Animal> animal = repository.findById(id);
+    public Optional<Animal> findById(final Integer id) {
 
-        if(animal.isPresent()) {
-            return animal.get();
-        }
-
-        return null;
+        return repository.findById(id);
     }
 
     public Habitat getHabitatByAnimalId(Integer id) {

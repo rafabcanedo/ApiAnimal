@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface TypeAnimalRepository extends JpaRepository<TypeAnimal, Integer> {
-    @Query(value = "SELECT DISTINCT ta.* FROM tipo_animal ta JOIN animal a ON ta.id = a.tipo_id WHERE a.habitat_id = :habitatId", nativeQuery = true)
+    @Query(value = "SELECT DISTINCT ta.* FROM tipo_animal ta JOIN animal a ON ta.id = a.tipo_id WHERE a.habitat_id = :habitat_id", nativeQuery = true)
     List<TypeAnimal> findTypesByHabitatId(@Param("habitat_id") Integer habitatId);
 }

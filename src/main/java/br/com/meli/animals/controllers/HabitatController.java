@@ -39,7 +39,7 @@ public class HabitatController {
     }
 
     @GetMapping(value = "/habitats/{id}")
-    public ResponseEntity<Habitat> findgetHabitatById(@PathVariable Integer id) {
+    public ResponseEntity<Habitat> findHabitatById(@PathVariable Integer id) {
 
        Optional<Habitat> findHabitat = service.findByHabitatId(id);
 
