@@ -1,9 +1,7 @@
 package br.com.meli.animals.controllers;
 
 import br.com.meli.animals.entities.TypeAnimal;
-import br.com.meli.animals.repositories.TypeAnimalRepository;
 import br.com.meli.animals.services.TypeAnimalService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

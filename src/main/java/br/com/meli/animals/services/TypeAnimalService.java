@@ -1,6 +1,5 @@
 package br.com.meli.animals.services;
 
-import br.com.meli.animals.entities.Animal;
 import br.com.meli.animals.entities.TypeAnimal;
 import br.com.meli.animals.repositories.AnimalRepository;
 import br.com.meli.animals.repositories.TypeAnimalRepository;

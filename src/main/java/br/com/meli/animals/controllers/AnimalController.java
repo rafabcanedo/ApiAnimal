@@ -1,16 +1,15 @@
 package br.com.meli.animals.controllers;
 
+import br.com.meli.animals.dto.animals.CreateAnimalResponseDTO;
 import br.com.meli.animals.entities.Animal;
 import br.com.meli.animals.entities.Habitat;
-import br.com.meli.animals.entities.TypeAnimal;
-import br.com.meli.animals.repositories.AnimalRepository;
 import br.com.meli.animals.services.AnimalService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -24,23 +23,36 @@ public class AnimalController {
         this.animalService = animalService;
     }
 
-    /*@RequestMapping(value = "/animals")
-    public ResponseEntity getAllAnimals() {
-        
-        var allAnimals = AnimalRepository.findAll();
+    @GetMapping(value = "/animals")
+    public List<Animal> getAllAnimals() {
 
-        return ResponseEntity.ok(allAnimals);
-    }*/
+        return animalService.getAllAnimals();
+    }
 
     @PostMapping(value = "/animals")
-    public ResponseEntity<Animal> create(@RequestBody Animal animal) {
+    public ResponseEntity<CreateAnimalResponseDTO> create(@RequestBody Animal animal) {
 
         try {
             Animal createdAnimal = animalService.create(
-                    animal.getName(), animal.getAge(), animal.getColor(), animal.getTypeAnimal(), animal.getHabitatAnimal()
+                    animal.getName(), animal.getAge(), animal.getColor(),
+                    animal.getTypeAnimal(),
+                    animal.getHabitatAnimal()
             );
 
-            return ResponseEntity.status(201).body(createdAnimal);
+            CreateAnimalResponseDTO response = new CreateAnimalResponseDTO();
+
+            response.setName(createdAnimal.getName());
+
+            response.setAge(createdAnimal.getAge());
+
+            response.setColor(createdAnimal.getColor());
+
+            response.setTypeAnimal(createdAnimal.getName());
+
+            response.setHabitatAnimal(createdAnimal.getName());
+
+            return ResponseEntity.ok(response);
+
         } catch(IllegalArgumentException event) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, event.getMessage(), event);
         }

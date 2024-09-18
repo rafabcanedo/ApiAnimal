@@ -9,6 +9,7 @@ import br.com.meli.animals.repositories.TypeAnimalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,17 +21,11 @@ public class AnimalService {
     private final HabitatRepository habitatRepository;
     private final TypeAnimalRepository typeAnimalRepository;
 
-    /*public Animal create(final String name, final Integer age, final String color) {
-        Animal animal = new Animal();
+    public List<Animal> getAllAnimals() {
+        //List<Animal> findAnimals = repository.findAll();
 
-        animal.setName(name);
-        animal.setAge(age);
-        animal.setColor(color);
-
-        return repository.save(animal);
-    }*/
-
-    // public Animal findAll() {}
+        return repository.findAll();
+    }
 
     public Animal create(final String name, final Integer age, final String color, final TypeAnimal typeAnimal, final Habitat habitat){
         Animal animal = new Animal();
@@ -40,6 +35,8 @@ public class AnimalService {
         animal.setName(name);
         animal.setAge(age);
         animal.setColor(color);
+        animal.setTypeAnimal(typeAnimal);
+        animal.setHabitatAnimal(habitat);
 
         findHabitat.ifPresent(animal::setHabitatAnimal);
         findType.ifPresent(animal::setTypeAnimal);
