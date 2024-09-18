@@ -1,6 +1,5 @@
 package br.com.meli.animals.dto.habitat;
 
-public class ListHabitatDTO {
-    private Integer id;
-    private String name;
+public record ListHabitatDTO(Integer id, String name) {
+
 }

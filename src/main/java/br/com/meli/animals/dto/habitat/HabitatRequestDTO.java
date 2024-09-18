@@ -1,5 +1,5 @@
 package br.com.meli.animals.dto.habitat;
 
-public class HabitatRequestDTO {
-    private String name;
+public record HabitatRequestDTO(String name) {
+
 }
