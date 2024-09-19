@@ -1,15 +1,7 @@
 package br.com.meli.animals.dto.animals;
 
-import lombok.Getter;
-import lombok.Setter;
+import br.com.meli.animals.dto.types.AnimalTypeResponseDTO;
 
-@Getter
-@Setter
-public class CreateAnimalResponseDTO {
-    private Integer id;
-    private String name;
-    private Integer age;
-    private String color;
-    private String typeAnimal;
-    private String habitatAnimal;
+public record CreateAnimalResponseDTO(Integer id, String name, Integer age, String color, AnimalTypeResponseDTO animalTypeDTO) {
+
 }
