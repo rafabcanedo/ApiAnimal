@@ -1,5 +1,6 @@
 package br.com.meli.animals.entities;
 
+import br.com.meli.animals.dto.animals.CreateAnimalRequestDTO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -37,8 +38,17 @@ public class Animal {
     @JoinColumn(name = "habitat_id")
     private Habitat habitatAnimal;
 
-}
+    public Animal(String name, Integer age, String color, Habitat habitatAnimal) {
+        this.name = name;
+        this.age = age;
+        this.color = color;
+        this.habitatAnimal = habitatAnimal;
+    }
 
-/*
-* @JsonManagedReference e @JsonBackReference
-* */
+    public Animal(CreateAnimalRequestDTO animalDto) {
+        this.setName(animalDto.name());
+        this.setAge(animalDto.age());
+        this.setColor(animalDto.color());
+    }
+
+}

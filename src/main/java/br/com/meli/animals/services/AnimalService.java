@@ -1,34 +1,62 @@
 package br.com.meli.animals.services;
 
+import br.com.meli.animals.dto.animals.CreateAnimalRequestDTO;
+import br.com.meli.animals.dto.animals.CreateAnimalResponseDTO;
+import br.com.meli.animals.dto.habitat.HabitatAndAnimalsResponseDTO;
+import br.com.meli.animals.dto.types.AnimalTypeResponseDTO;
 import br.com.meli.animals.entities.Animal;
 import br.com.meli.animals.entities.Habitat;
 import br.com.meli.animals.entities.TypeAnimal;
 import br.com.meli.animals.repositories.AnimalRepository;
 import br.com.meli.animals.repositories.HabitatRepository;
 import br.com.meli.animals.repositories.TypeAnimalRepository;
-import lombok.RequiredArgsConstructor;
+import br.com.meli.animals.services.exceptions.AnimalAlreadyExists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class AnimalService {
 
+    private static final Logger log = LoggerFactory.getLogger(AnimalService.class);
     // Connect db => Animal repository
     private final AnimalRepository repository;
     private final HabitatRepository habitatRepository;
     private final TypeAnimalRepository typeAnimalRepository;
 
-    public List<Animal> getAllAnimals() {
-        //List<Animal> findAnimals = repository.findAll();
-
-        return repository.findAll();
+    @Autowired
+    public AnimalService(AnimalRepository animalRepository, HabitatRepository habitatRepository, TypeAnimalRepository typeAnimalRepository) {
+        this.repository = animalRepository;
+        this.habitatRepository = habitatRepository;
+        this.typeAnimalRepository = typeAnimalRepository;
     }
 
-    public Animal create(final String name, final Integer age, final String color, final TypeAnimal typeAnimal, final Habitat habitat){
-        Animal animal = new Animal();
+    //@Override
+    public List<CreateAnimalResponseDTO> getAllAnimals() {
+        List<Animal> findAnimals = repository.findAll();
+
+        List<CreateAnimalResponseDTO> listDTO = findAnimals
+                .stream().map(animal -> new CreateAnimalResponseDTO(animal.getId(), animal.getName(), animal.getAge(),
+                        animal.getColor(), new AnimalTypeResponseDTO(animal.getTypeAnimal().getId(), animal.getTypeAnimal().getName()))).toList();
+
+        return listDTO;
+    }
+
+    public HabitatAndAnimalsResponseDTO create(CreateAnimalRequestDTO createAnimalRequestDTO, String habitatName, String typeAnimal) {
+
+        boolean animalExists = animalExist(createAnimalRequestDTO.name());
+
+        if(animalExists) {
+            log.error("Animal with name {} already exists", createAnimalRequestDTO.name());
+            throw new AnimalAlreadyExists("Animal already exists");
+        }
+
+        Animal animal = new Animal(createAnimalRequestDTO);
+
         Optional<Habitat> findHabitat = habitatRepository.findById(habitat.getId());
         Optional<TypeAnimal> findType = typeAnimalRepository.findById(typeAnimal.getId());
 
