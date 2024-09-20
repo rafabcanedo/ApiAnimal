@@ -3,7 +3,6 @@ package br.com.meli.animals.controllers;
 import br.com.meli.animals.dto.animals.AnimalAndHabitatDTO;
 import br.com.meli.animals.dto.animals.CreateAnimalRequestDTO;
 import br.com.meli.animals.dto.animals.CreateAnimalResponseDTO;
-import br.com.meli.animals.entities.Habitat;
 import br.com.meli.animals.services.AnimalService;
 import br.com.meli.animals.services.interfaces.IAnimalService;
 import org.slf4j.Logger;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class AnimalController {
@@ -69,7 +67,7 @@ public class AnimalController {
         return ResponseEntity.ok(findAnimal);
     }
 
-    @GetMapping("animals/{id}/habitat")
+    /*@GetMapping("animals/{id}/habitat")
     public ResponseEntity<AnimalAndHabitatDTO> findByHabitatId(@PathVariable Integer id){
         Habitat animalHabitat = animalService.(id);
         if(animalHabitat != null){
@@ -77,6 +75,6 @@ public class AnimalController {
         }
 
         return ResponseEntity.notFound().build();
-    }
+    }*/
 
 }

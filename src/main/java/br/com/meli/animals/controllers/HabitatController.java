@@ -38,8 +38,8 @@ public class HabitatController {
     }
 
     @GetMapping(value = "/habitats/{id}")
-    ResponseEntity<AnimalAndHabitatDTO> findHabitatById(@PathVariable Integer id) {
-        AnimalAndHabitatDTO response = service.findAnimalAndHabitat(id);
+    ResponseEntity<HabitatAndAnimalsResponseDTO> findHabitatById(@PathVariable Integer id) {
+        HabitatAndAnimalsResponseDTO response = service.findAnimalAndHabitat(id);
         log.info("Habitat found: {}", response);
         return ResponseEntity.ok(response);
     }

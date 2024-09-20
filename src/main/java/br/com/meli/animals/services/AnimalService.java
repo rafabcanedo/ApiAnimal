@@ -3,7 +3,6 @@ package br.com.meli.animals.services;
 import br.com.meli.animals.dto.animals.AnimalAndHabitatDTO;
 import br.com.meli.animals.dto.animals.CreateAnimalRequestDTO;
 import br.com.meli.animals.dto.animals.CreateAnimalResponseDTO;
-import br.com.meli.animals.dto.habitat.HabitatAndAnimalsResponseDTO;
 import br.com.meli.animals.dto.habitat.HabitatResponseDTO;
 import br.com.meli.animals.dto.types.AnimalTypeResponseDTO;
 import br.com.meli.animals.entities.Animal;
@@ -14,7 +13,10 @@ import br.com.meli.animals.repositories.HabitatRepository;
 import br.com.meli.animals.repositories.TypeAnimalRepository;
 import br.com.meli.animals.services.exceptions.AnimalAlreadyExists;
 import br.com.meli.animals.services.exceptions.AnimalNotFoundException;
+import br.com.meli.animals.services.exceptions.AnimalTypeNotFoundException;
 import br.com.meli.animals.services.interfaces.IAnimalService;
+import lombok.extern.slf4j.Slf4j;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,6 @@ public class AnimalService implements IAnimalService {
         this.typeAnimalRepository = typeAnimalRepository;
     }
 
-    //@Override
     public List<CreateAnimalResponseDTO> getAllAnimals() {
         List<Animal> findAnimals = repository.findAll();
 
@@ -83,6 +84,8 @@ public class AnimalService implements IAnimalService {
 
             return habitatAndAnimalsResponseDTO;
         }
+        log.error("Type Animal not found");
+        throw new AnimalTypeNotFoundException("Type Animal not found");
     }
 
     public AnimalAndHabitatDTO update(Integer id, CreateAnimalRequestDTO createAnimalRequestDTO) {
@@ -108,10 +111,15 @@ public class AnimalService implements IAnimalService {
         return responseAnimalAndHabitatDTO;
     }
 
-
     public void deleteAnimal(final Integer id) {
 
         Optional<Animal> toDelete = repository.findById(id);
+
+        if(toDelete.isEmpty()) {
+            log.error("Animal not found");
+            throw new AnimalNotFoundException("Animal not found");
+        }
+
         toDelete.ifPresent(repository::delete);
     }
 
@@ -132,12 +140,15 @@ public class AnimalService implements IAnimalService {
         return findAnimal;
     }
 
-    public Habitat getHabitatByAnimalId(Integer id) {
-
-        Optional<Animal> foundAnimal = repository.findById(id);
-        return foundAnimal.map(Animal::getHabitatAnimal).orElse(null);
+    @Override
+    public List<CreateAnimalResponseDTO> animalToTDO(List<Animal> animals){
+        List<CreateAnimalResponseDTO> listDTO = animals.stream().map(animal -> new CreateAnimalResponseDTO(animal.getId(),
+                animal.getName(), animal.getAge(), animal.getColor(),
+                new AnimalTypeResponseDTO(animal.getTypeAnimal().getId(), animal.getTypeAnimal().getName()))).toList();
+        return listDTO;
     }
 
+    @Override
     public boolean animalExist(final String name) {
 
         Optional<Animal> optionalAnimal = repository.findByName(name);
@@ -145,3 +156,9 @@ public class AnimalService implements IAnimalService {
         return optionalAnimal.isPresent();
     }
 }
+
+    /*public Habitat getHabitatByAnimalId(Integer id) {
+
+        Optional<Animal> foundAnimal = repository.findById(id);
+        return foundAnimal.map(Animal::getHabitatAnimal).orElse(null);
+    }*/
