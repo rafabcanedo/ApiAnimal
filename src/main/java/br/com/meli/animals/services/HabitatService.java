@@ -1,13 +1,19 @@
 package br.com.meli.animals.services;
 
+import br.com.meli.animals.dto.animals.AnimalAndHabitatDTO;
+import br.com.meli.animals.dto.animals.CreateAnimalResponseDTO;
 import br.com.meli.animals.entities.Habitat;
 import br.com.meli.animals.repositories.HabitatRepository;
+import br.com.meli.animals.services.exceptions.HabitatNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class HabitatService {
 
@@ -49,9 +55,17 @@ public class HabitatService {
         return null;
     }
 
-    public Optional<Habitat> findByHabitatId(final Integer id){
+    public AnimalAndHabitatDTO findAnimalAndHabitat(Integer id) {
+        Optional<Habitat> habitat = repository.findById(id);
 
-        return repository.findById(id);
+        if(habitat.isPresent()) {
+            List<CreateAnimalResponseDTO> animals = getAnimalsDTO(habitat.get());
+            AnimalAndHabitatDTO habitatDTO = new AnimalAndHabitatDTO(habitat.get().getId(), habitat.get().getName(), animals);
 
+            return habitatDTO;
+        }
+
+        log.error("Habitat not found");
+        throw new HabitatNotFoundException("Habitat no found");
     }
 }

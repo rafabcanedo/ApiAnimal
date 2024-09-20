@@ -1,30 +1,25 @@
 package br.com.meli.animals.controllers;
 
+import br.com.meli.animals.dto.types.TypeAndAnimalsResponseDTO;
 import br.com.meli.animals.entities.TypeAnimal;
 import br.com.meli.animals.services.TypeAnimalService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-// @RequiredArgsConstructor
 public class TypeAnimalController {
 
+    private static final Logger log = LoggerFactory.getLogger(TypeAnimalController.class);
     private final TypeAnimalService service;
     //private final TypeAnimalRepository repository;
 
     public TypeAnimalController(TypeAnimalService typeAnimalService) {
         this.service = typeAnimalService;
     }
-
-    /*@RequestMapping(value = "/typeanimals")
-    public ResponseEntity getAllTypeAnimals() {
-
-        var allTypeAnimals = repository.findAll();
-
-        return ResponseEntity.ok(allTypeAnimals);
-    }*/
 
     @PostMapping(value = "/typeanimals")
     public ResponseEntity<TypeAnimal> create(@RequestBody TypeAnimal typeAnimal) {
@@ -52,13 +47,10 @@ public class TypeAnimalController {
     }
 
     @GetMapping("/habitat-id/{id}")
-    public ResponseEntity<List<TypeAnimal>> getTypesByHabitatId(@PathVariable Integer id){
-        List<TypeAnimal> typesByHabitat = service.findTypesByHabitatId(id);
-        if(typesByHabitat.isEmpty()){
-            return ResponseEntity.status(204).build();
-        }
-
-        return ResponseEntity.status(200).body(typesByHabitat);
+    public ResponseEntity<TypeAndAnimalsResponseDTO> getTypeAnimalById (@PathVariable Integer id) {
+        TypeAndAnimalsResponseDTO typeAndAnimalsResponseDTO = service.findTypeAnimalById(id);
+        log.info("TypeAnimals: {}", typeAndAnimalsResponseDTO);
+        return ResponseEntity.ok(typeAndAnimalsResponseDTO);
     }
 
 }

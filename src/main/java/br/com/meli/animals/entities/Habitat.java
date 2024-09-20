@@ -1,5 +1,7 @@
 package br.com.meli.animals.entities;
 
+import br.com.meli.animals.dto.habitat.HabitatRequestDTO;
+import br.com.meli.animals.dto.habitat.HabitatResponseDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,4 +24,12 @@ public class Habitat {
 
     @OneToMany(mappedBy = "habitatAnimal", fetch = FetchType.EAGER)
     private List<Animal> animals;
+
+    public Habitat(String name) {
+        this.name = name;
+    }
+
+    public Habitat(HabitatRequestDTO habitat){
+        this.name = habitat.name();
+    }
 }

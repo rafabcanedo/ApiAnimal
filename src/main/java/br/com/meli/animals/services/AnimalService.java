@@ -1,5 +1,6 @@
 package br.com.meli.animals.services;
 
+import br.com.meli.animals.dto.animals.AnimalAndHabitatDTO;
 import br.com.meli.animals.dto.animals.CreateAnimalRequestDTO;
 import br.com.meli.animals.dto.animals.CreateAnimalResponseDTO;
 import br.com.meli.animals.dto.habitat.HabitatAndAnimalsResponseDTO;
@@ -12,8 +13,8 @@ import br.com.meli.animals.repositories.AnimalRepository;
 import br.com.meli.animals.repositories.HabitatRepository;
 import br.com.meli.animals.repositories.TypeAnimalRepository;
 import br.com.meli.animals.services.exceptions.AnimalAlreadyExists;
+import br.com.meli.animals.services.exceptions.AnimalNotFoundException;
 import br.com.meli.animals.services.interfaces.IAnimalService;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class AnimalService implements IAnimalService {
     }
 
     @Override
-    public HabitatAndAnimalsResponseDTO create(CreateAnimalRequestDTO createAnimalRequestDTO, String habitatName, String typeAnimal) {
+    public AnimalAndHabitatDTO create(CreateAnimalRequestDTO createAnimalRequestDTO, String habitatName, String typeAnimal) {
 
         boolean animalExists = animalExist(createAnimalRequestDTO.name());
 
@@ -65,52 +66,74 @@ public class AnimalService implements IAnimalService {
         Optional<Habitat> findHabitat = habitatRepository.findHabitatByName(habitatName);
         Optional<TypeAnimal> findType = typeAnimalRepository.findTypeAnimalByName(typeAnimal);
 
-        if(habitatOptional.isPresent() && typeAnimalOptional.isPresent()){
-            newAnimal.setHabitat(habitatOptional.get());
-            newAnimal.setTypeAnimal(typeAnimalOptional.get());
+        if(findHabitat.isPresent() && findType.isPresent()){
+            animal.setHabitatAnimal(findHabitat.get());
+            animal.setTypeAnimal(findType.get());
 
-            habitatOptional.get().getAnimal().add(newAnimal);
-            animalTypeOptional.get().getAnimals().add(newAnimal);
+            findHabitat.get().getAnimals().add(animal);
+            findType.get().getAnimals().add(animal);
 
             repository.save(animal);
             habitatRepository.save(findHabitat.get());
             typeAnimalRepository.save(findType.get());
 
-            HabitatAndAnimalsResponseDTO habitatAndAnimalsResponseDTO = new HabitatAndAnimalsResponseDTO(newAnimal.getId(),
-                    newAnimal.getAge(), newAnimal.getColor(), new HabitatResponseDTO(habitatOptional.get().getId(),
-                    habitatOptional.get().getName()));
+            AnimalAndHabitatDTO habitatAndAnimalsResponseDTO = new AnimalAndHabitatDTO(animal.getId(),animal.getName(),
+                    animal.getAge(), animal.getColor(), new HabitatResponseDTO(findHabitat.get().getId(),
+                    findHabitat.get().getName()));
 
             return habitatAndAnimalsResponseDTO;
         }
     }
 
-    public Animal update(final String name, final Integer age, final String color, final Integer id) {
+    public AnimalAndHabitatDTO update(Integer id, CreateAnimalRequestDTO createAnimalRequestDTO) {
 
         Optional<Animal> animal = repository.findById(id);
 
-        if(animal.isPresent()) {
-            animal.get().setName(name);
-            animal.get().setAge(age);
-            animal.get().setColor(color);
-
-            return repository.save(animal.get());
+        if(animal.isEmpty()) {
+            log.error("Animal not found");
+            throw new AnimalNotFoundException("Animal not found");
         }
 
-        return null;
+        Animal updateAnimal = animal.get();
+
+        updateAnimal.setName(createAnimalRequestDTO.name());
+        updateAnimal.setAge(createAnimalRequestDTO.age());
+        updateAnimal.setColor(createAnimalRequestDTO.color());
+        repository.save(updateAnimal);
+
+        AnimalAndHabitatDTO responseAnimalAndHabitatDTO = new AnimalAndHabitatDTO(updateAnimal.getId(), updateAnimal.getName(), updateAnimal.getAge(),
+                updateAnimal.getColor(), new HabitatResponseDTO(updateAnimal.getHabitatAnimal().getId(), updateAnimal.getHabitatAnimal().getName()));
+
+
+        return responseAnimalAndHabitatDTO;
     }
 
 
     public void deleteAnimal(final Integer id) {
+
         Optional<Animal> toDelete = repository.findById(id);
         toDelete.ifPresent(repository::delete);
     }
 
-    public Optional<Animal> getById(final Integer id) {
+    public AnimalAndHabitatDTO getById(final Integer id) {
 
-        return repository.findById(id);
+        Optional<Animal> optionalAnimal = repository.findById(id);
+
+        if(optionalAnimal.isEmpty()) {
+            log.error("Animal not found");
+            throw new AnimalNotFoundException("Animal not found");
+        }
+
+        AnimalAndHabitatDTO findAnimal = new AnimalAndHabitatDTO(optionalAnimal.get().getId(), optionalAnimal.get().getName(),
+                optionalAnimal.get().getAge(), optionalAnimal.get().getColor(), new HabitatResponseDTO(
+                        optionalAnimal.get().getHabitatAnimal().getId(), optionalAnimal.get().getHabitatAnimal().getName()
+        ));
+
+        return findAnimal;
     }
 
     public Habitat getHabitatByAnimalId(Integer id) {
+
         Optional<Animal> foundAnimal = repository.findById(id);
         return foundAnimal.map(Animal::getHabitatAnimal).orElse(null);
     }

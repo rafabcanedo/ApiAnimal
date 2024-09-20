@@ -1,18 +1,19 @@
 package br.com.meli.animals.controllers;
 
+import br.com.meli.animals.dto.animals.AnimalAndHabitatDTO;
+import br.com.meli.animals.dto.habitat.HabitatAndAnimalsResponseDTO;
 import br.com.meli.animals.entities.Habitat;
 import br.com.meli.animals.services.HabitatService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
-//@RequiredArgsConstructor
+@Slf4j
 public class HabitatController {
 
     private final HabitatService service;
-    //private final HabitatRepository habitatRepository;
 
     public HabitatController(HabitatService service) {
         this.service = service;
@@ -37,10 +38,9 @@ public class HabitatController {
     }
 
     @GetMapping(value = "/habitats/{id}")
-    public ResponseEntity<Habitat> findHabitatById(@PathVariable Integer id) {
-
-       Optional<Habitat> findHabitat = service.findByHabitatId(id);
-
-        return findHabitat.map(habitat -> ResponseEntity.status(200).body(habitat)).orElseGet(() -> ResponseEntity.notFound().build());
+    ResponseEntity<AnimalAndHabitatDTO> findHabitatById(@PathVariable Integer id) {
+        AnimalAndHabitatDTO response = service.findAnimalAndHabitat(id);
+        log.info("Habitat found: {}", response);
+        return ResponseEntity.ok(response);
     }
 }

@@ -1,15 +1,15 @@
 package br.com.meli.animals.controllers;
 
+import br.com.meli.animals.dto.animals.AnimalAndHabitatDTO;
+import br.com.meli.animals.dto.animals.CreateAnimalRequestDTO;
 import br.com.meli.animals.dto.animals.CreateAnimalResponseDTO;
-import br.com.meli.animals.entities.Animal;
 import br.com.meli.animals.entities.Habitat;
 import br.com.meli.animals.services.AnimalService;
+import br.com.meli.animals.services.interfaces.IAnimalService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,8 +18,7 @@ import java.util.Optional;
 public class AnimalController {
 
     private static final Logger log = LoggerFactory.getLogger(AnimalController.class);
-    private final AnimalService animalService;
-    //private final AnimalRepository repository;
+    private final IAnimalService animalService;
 
     public AnimalController(AnimalService animalService) {
         this.animalService = animalService;
@@ -34,67 +33,45 @@ public class AnimalController {
     }
 
     @PostMapping(value = "/animals")
-    public ResponseEntity<CreateAnimalResponseDTO> create(@RequestBody Animal animal) {
+    public ResponseEntity<AnimalAndHabitatDTO> create(@RequestBody CreateAnimalRequestDTO animal, @RequestParam String habitatName, @RequestParam String typeAnimal) {
 
-        try {
-            Animal createdAnimal = animalService.create(
-                    animal.getName(), animal.getAge(), animal.getColor(),
-                    animal.getTypeAnimal(),
-                    animal.getHabitatAnimal()
-            );
-
-            CreateAnimalResponseDTO response = new CreateAnimalResponseDTO();
-
-            response.setName(createdAnimal.getName());
-
-            response.setAge(createdAnimal.getAge());
-
-            response.setColor(createdAnimal.getColor());
-
-            response.setTypeAnimal(createdAnimal.getName());
-
-            response.setHabitatAnimal(createdAnimal.getName());
-
-            return ResponseEntity.ok(response);
-
-        } catch(IllegalArgumentException event) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, event.getMessage(), event);
+        {
+            AnimalAndHabitatDTO createAnimal = animalService.create(animal, habitatName, typeAnimal);
+            log.info("Create Animal: {}", createAnimal);
+            return ResponseEntity.ok(createAnimal);
         }
     }
 
     @PutMapping(value = "/animals/{id}")
-    public ResponseEntity<Animal> update(@PathVariable Integer id, @RequestBody Animal animal) {
-        Animal editedAnimal = animalService.update(
-                animal.getName(), animal.getAge(), animal.getColor(), id
+    public ResponseEntity<AnimalAndHabitatDTO> update(@PathVariable Integer id, @RequestBody CreateAnimalRequestDTO animal) {
+        AnimalAndHabitatDTO editedAnimal = animalService.update(
+                id, animal
         );
+
+        log.info("Update Animal", editedAnimal);
 
         return ResponseEntity.ok(editedAnimal);
     }
 
     @DeleteMapping(value = "/animals/{id}")
-    public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id) {
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
 
-        Optional<Animal> animal = animalService.findById(id);
-
-        if(animal.isPresent()) {
-            animalService.deleteAnimal(id);
-            return ResponseEntity.status(204).build();
-        }
+        animalService.deleteAnimal(id);
 
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "/animals/{id}")
-    public ResponseEntity<Animal> findById(@PathVariable(value = "id") Integer id) {
+    public ResponseEntity<AnimalAndHabitatDTO> findById(@PathVariable(value = "id") Integer id) {
 
-        Optional<Animal> findAnimal = animalService.findById(id);
+        AnimalAndHabitatDTO findAnimal = animalService.getById(id);
 
-        return findAnimal.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(findAnimal);
     }
 
     @GetMapping("animals/{id}/habitat")
-    public ResponseEntity<Habitat> findByHabitatId(@PathVariable Integer id){
-        Habitat animalHabitat = animalService.getHabitatByAnimalId(id);
+    public ResponseEntity<AnimalAndHabitatDTO> findByHabitatId(@PathVariable Integer id){
+        Habitat animalHabitat = animalService.(id);
         if(animalHabitat != null){
             return ResponseEntity.ok(animalHabitat);
         }
