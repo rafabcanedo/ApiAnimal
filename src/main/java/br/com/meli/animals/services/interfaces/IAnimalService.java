@@ -10,8 +10,10 @@ import java.util.List;
 public interface IAnimalService {
  AnimalAndHabitatDTO create(CreateAnimalRequestDTO createAnimalRequestDTO, String habitatName, String typeAnimal);
  List<CreateAnimalResponseDTO> getAllAnimals();
- AnimalAndHabitatDTO getAnimalById(Integer id);
+ AnimalAndHabitatDTO getById(Integer id);
  AnimalAndHabitatDTO update(Integer id, CreateAnimalRequestDTO createAnimalRequestDTO);
  void deleteAnimal(Integer id);
  List<CreateAnimalResponseDTO> animalToTDO(List<Animal> animals);
+
+ boolean animalExist(String name);
 }

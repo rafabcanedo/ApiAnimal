@@ -3,6 +3,7 @@ package br.com.meli.animals.services;
 import br.com.meli.animals.dto.animals.CreateAnimalRequestDTO;
 import br.com.meli.animals.dto.animals.CreateAnimalResponseDTO;
 import br.com.meli.animals.dto.habitat.HabitatAndAnimalsResponseDTO;
+import br.com.meli.animals.dto.habitat.HabitatResponseDTO;
 import br.com.meli.animals.dto.types.AnimalTypeResponseDTO;
 import br.com.meli.animals.entities.Animal;
 import br.com.meli.animals.entities.Habitat;
@@ -11,6 +12,8 @@ import br.com.meli.animals.repositories.AnimalRepository;
 import br.com.meli.animals.repositories.HabitatRepository;
 import br.com.meli.animals.repositories.TypeAnimalRepository;
 import br.com.meli.animals.services.exceptions.AnimalAlreadyExists;
+import br.com.meli.animals.services.interfaces.IAnimalService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +23,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class AnimalService {
+public class AnimalService implements IAnimalService {
 
     private static final Logger log = LoggerFactory.getLogger(AnimalService.class);
+
     // Connect db => Animal repository
     private final AnimalRepository repository;
     private final HabitatRepository habitatRepository;
@@ -46,6 +50,7 @@ public class AnimalService {
         return listDTO;
     }
 
+    @Override
     public HabitatAndAnimalsResponseDTO create(CreateAnimalRequestDTO createAnimalRequestDTO, String habitatName, String typeAnimal) {
 
         boolean animalExists = animalExist(createAnimalRequestDTO.name());
@@ -57,19 +62,26 @@ public class AnimalService {
 
         Animal animal = new Animal(createAnimalRequestDTO);
 
-        Optional<Habitat> findHabitat = habitatRepository.findById(habitat.getId());
-        Optional<TypeAnimal> findType = typeAnimalRepository.findById(typeAnimal.getId());
+        Optional<Habitat> findHabitat = habitatRepository.findHabitatByName(habitatName);
+        Optional<TypeAnimal> findType = typeAnimalRepository.findTypeAnimalByName(typeAnimal);
 
-        animal.setName(name);
-        animal.setAge(age);
-        animal.setColor(color);
-        animal.setTypeAnimal(typeAnimal);
-        animal.setHabitatAnimal(habitat);
+        if(habitatOptional.isPresent() && typeAnimalOptional.isPresent()){
+            newAnimal.setHabitat(habitatOptional.get());
+            newAnimal.setTypeAnimal(typeAnimalOptional.get());
 
-        findHabitat.ifPresent(animal::setHabitatAnimal);
-        findType.ifPresent(animal::setTypeAnimal);
+            habitatOptional.get().getAnimal().add(newAnimal);
+            animalTypeOptional.get().getAnimals().add(newAnimal);
 
-        return repository.save(animal);
+            repository.save(animal);
+            habitatRepository.save(findHabitat.get());
+            typeAnimalRepository.save(findType.get());
+
+            HabitatAndAnimalsResponseDTO habitatAndAnimalsResponseDTO = new HabitatAndAnimalsResponseDTO(newAnimal.getId(),
+                    newAnimal.getAge(), newAnimal.getColor(), new HabitatResponseDTO(habitatOptional.get().getId(),
+                    habitatOptional.get().getName()));
+
+            return habitatAndAnimalsResponseDTO;
+        }
     }
 
     public Animal update(final String name, final Integer age, final String color, final Integer id) {
@@ -93,7 +105,7 @@ public class AnimalService {
         toDelete.ifPresent(repository::delete);
     }
 
-    public Optional<Animal> findById(final Integer id) {
+    public Optional<Animal> getById(final Integer id) {
 
         return repository.findById(id);
     }
@@ -101,5 +113,12 @@ public class AnimalService {
     public Habitat getHabitatByAnimalId(Integer id) {
         Optional<Animal> foundAnimal = repository.findById(id);
         return foundAnimal.map(Animal::getHabitatAnimal).orElse(null);
+    }
+
+    public boolean animalExist(final String name) {
+
+        Optional<Animal> optionalAnimal = repository.findByName(name);
+
+        return optionalAnimal.isPresent();
     }
 }

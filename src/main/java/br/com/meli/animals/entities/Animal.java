@@ -1,8 +1,6 @@
 package br.com.meli.animals.entities;
 
 import br.com.meli.animals.dto.animals.CreateAnimalRequestDTO;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,12 +27,10 @@ public class Animal {
     private String color;
     
     @ManyToOne(cascade = CascadeType.ALL)
-    //@JsonBackReference
     @JoinColumn(name = "type_animal_id")
     private TypeAnimal typeAnimal;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    //@JsonManagedReference
     @JoinColumn(name = "habitat_id")
     private Habitat habitatAnimal;
 
@@ -49,6 +45,46 @@ public class Animal {
         this.setName(animalDto.name());
         this.setAge(animalDto.age());
         this.setColor(animalDto.color());
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public Habitat getHabitatAnimal() {
+        return habitatAnimal;
+    }
+
+    public TypeAnimal getTypeAnimal() {
+        return typeAnimal;
     }
 
 }
